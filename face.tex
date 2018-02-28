@@ -93,7 +93,7 @@
     }
 
 
-\graphicspath{{figs/face_recognition/}{figs/attention/}}
+\graphicspath{{figs/head_pose/}{figs/face_recognition/}{figs/attention/}}
 
 \title{Facial features, Face recognition, Attention}
 \subtitle{AINT512}
@@ -109,6 +109,18 @@
 \licenseframe{github.com/severin-lemaignan/lecture-face-hri}
 
 \maketitle
+
+
+\begin{frame}{This week}
+
+This week, we are looking at the face:
+
+    \begin{itemize}
+        \item face recognition
+        \item head pose estimation
+        \item attention tracking
+    \end{itemize}
+\end{frame}
 
 \miniframeson
 
@@ -459,10 +471,7 @@ between-class discriminant features}]{dataset}
 \miniframeson
 
 
-
-
-
-\section{Attention tracking}
+\section{6D head pose estimation}
 
 \begin{frame}[plain]{}
     \begin{center}
@@ -472,30 +481,152 @@ between-class discriminant features}]{dataset}
      \only<2>{
         \includegraphics[width=0.8\linewidth]{head_pose0}
     }
-     \only<3>{
+
+        \begin{center}
+        {\tt dlib} or OpenPose/OpenFace
+        \end{center}
+
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Face mask}
+
+    \begin{columns}
+        \begin{column}{0.5\linewidth}
+            \begin{center}
+                \includegraphics[width=0.8\linewidth]{face_mask}
+            \end{center}
+        \end{column}
+        \begin{column}{0.5\linewidth}
+\begin{cppcode}
+cv::Point3f P3D_SELLION(0., 0.,0.);
+cv::Point3f P3D_RIGHT_EYE(-20., -65.5,-5.);
+cv::Point3f P3D_LEFT_EYE(-20., 65.5,-5.);
+cv::Point3f P3D_RIGHT_EAR(-100., -77.5,-6.);
+cv::Point3f P3D_LEFT_EAR(-100., 77.5,-6.);
+cv::Point3f P3D_NOSE(21.0, 0., -48.0);
+cv::Point3f P3D_STOMMION(10.0, 0., -75.0);
+cv::Point3f P3D_MENTON(0., 0.,-133.0);
+\end{cppcode}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}[plain]{}
+    \begin{center}
+     \only<1>{
         \includegraphics[width=0.8\linewidth]{head_pose}
     }
-
-     \only<4->{
+     \only<2>{
         \includegraphics[width=0.8\linewidth]{head_pose2}
     }
 
-    \texttt{dlib}
-    \uncover<3->{+ OpenCV}
-    \uncover<4->{= \texttt{gazr}
+    {\tt dlib} or OpenPose/OpenFace + OpenCV
 
-    \url{http://github.com/severin-lemaignan/gazr} (with ROS support!)}
     \end{center}
 \end{frame}
 
 
-\imageframe[color=black]{head_pose_real_world}
+\begin{frame}[fragile]{Head pose estimation in C++}
 
-\imageframe[color=black]{field_of_attention0}
+\begin{onlyenv}<1>
+\begin{cppcode}
 
-\section{Experimental setup}
+    cv::Mat projectionMat = cv::Mat::zeros(3,3,CV_32F);
+    cv::Matx33f projection = projectionMat;
+    projection(0,0) = focalLength;
+    projection(1,1) = focalLength;
+    projection(0,2) = opticalCenterX;
+    projection(1,2) = opticalCenterY;
+    projection(2,2) = 1;
+
+    std::vector<Point3f> head_points;
+
+    head_points.push_back(P3D_SELLION);
+    head_points.push_back(P3D_RIGHT_EYE);
+    // ...
+
+    std::vector<Point2f> detected_points;
+
+    detected_points.push_back(/* x,y of sellion in img */));
+    detected_points.push_back(/* x,y of right eye in img*/));
+    // ...
+
+\end{cppcode}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{cppcode}
+    // Initializing the head pose 1m away, roughly facing the robot
+    // This initialization is important as it prevents solvePnP to find the
+    // mirror solution (head *behind* the camera)
+    Mat tvec = (Mat_<double>(3,1) << 0., 0., 1000.);
+    Mat rvec = (Mat_<double>(3,1) << 1.2, 1.2, -1.2);
+
+    // Find the 3D pose of our head
+    solvePnP(head_points, detected_points,
+            projection, noArray(),
+            rvec, tvec, true,
+            cv::SOLVEPNP_ITERATIVE);
+
+    Matx33d rotation;
+    Rodrigues(rvec, rotation);
+
+    Matx44d pose = {
+     rotation(0,0), rotation(0,1), rotation(0,2), tvec.at<double>(0)/1000,
+     rotation(1,0), rotation(1,1), rotation(1,2), tvec.at<double>(1)/1000,
+     rotation(2,0), rotation(2,1), rotation(2,2), tvec.at<double>(2)/1000,
+                 0,             0,             0,                       1
+    };
+
+\end{cppcode}
+\end{onlyenv}
+
+    \source{http://github.com/severin-lemaignan/gazr}{gazr (include ROS support)}
+\end{frame}
+
+\imageframe[caption={In the wild, more difficult!}, color=black]{head_pose_real_world}
+
+\section{Attention tracking}
+
 
 \imageframe[color=black]{realSetup}
+\imageframe[color=black]{field_of_attention0}
+
+\imageframe{field_of_attention_schema0}
+\imageframe{field_of_attention_schema1}
+\imageframe{field_of_attention_schema2}
+\imageframe{field_of_attention_schema3}
+
+\begin{frame}[fragile]{In the field of view?}
+
+\begin{cppcode}
+static const double FOV = 20. / 180 * M_PI; // radians
+
+bool isInFieldOfView(const tf::TransformListener& listener,
+                     const string& target, const string& observer) {
+
+    // compute the location of target from observer's PoV
+    tf::StampedTransform transform;
+    listener.lookupTransform(observer, target, ros::Time(0), transform);
+
+    // the field of view's main axis is the observer's X axis.
+    // So, distance to main axis is simply sqrt(y^2 + z^2)
+    double distance_to_main_axis = sqrt(pow(transform.getOrigin().y(), 2) +
+                                        pow(transform.getOrigin().z(), 2));
+
+    double fov_radius_at_x = tan(FOV/2) * transform.getOrigin().x();
+
+    if (distance_to_main_axis < fov_radius_at_x) return true;
+    else return false;
+
+}
+
+\end{cppcode}
+    \source{http://github.com/severin-lemaignan/gazr}{gazr}
+\end{frame}
+
+
 \imageframe{experimental_setup}
 \imageframe[color=black]{field_of_attention}
 
@@ -644,10 +775,6 @@ def withmeness(startime, endtime):
         \item $\Rightarrow$ {\bf relative} metric!
     \end{itemize}
 
-    \centering
-    (and all open-source!)
-
-
 \end{frame}
 
 
@@ -670,9 +797,9 @@ def withmeness(startime, endtime):
 
 
 
-\section{Supplementary material}
+\section[]{Supplementary material}
 
-\section[With ROS]{Face recognition with ROS?}
+\section[]{Face recognition with ROS?}
 
 \begin{frame}{Reminder: a simple image processing pipeline}
 
@@ -796,7 +923,7 @@ Finally, we run a 3rd node to display the image:
 
 \imageframe[color=black]{image_processor.png}
 
-\section{Creating the FaceRec ROS package}
+\section[]{Creating the FaceRec ROS package}
 
 \begin{frame}[fragile]{Let's create a proper ROS package}
 
