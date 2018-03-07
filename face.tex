@@ -492,21 +492,24 @@ between-class discriminant features}]{dataset}
 \begin{frame}[fragile]{Face mask}
 
     \begin{columns}
-        \begin{column}{0.5\linewidth}
+        \begin{column}{0.4\linewidth}
             \begin{center}
-                \includegraphics[width=0.8\linewidth]{face_mask}
+                \includegraphics[width=\linewidth]{face_mask}
             \end{center}
         \end{column}
-        \begin{column}{0.5\linewidth}
+        \begin{column}{0.6\linewidth}
 \begin{cppcode}
-cv::Point3f P3D_SELLION(0., 0.,0.);
-cv::Point3f P3D_RIGHT_EYE(-20., -65.5,-5.);
-cv::Point3f P3D_LEFT_EYE(-20., 65.5,-5.);
-cv::Point3f P3D_RIGHT_EAR(-100., -77.5,-6.);
-cv::Point3f P3D_LEFT_EAR(-100., 77.5,-6.);
-cv::Point3f P3D_NOSE(21.0, 0., -48.0);
-cv::Point3f P3D_STOMMION(10.0, 0., -75.0);
-cv::Point3f P3D_MENTON(0., 0.,-133.0);
+// anthropometry values taken from
+// https://en.wikipedia.org/wiki/Human_head
+// (in mm)
+Point3f SELLION(0., 0.,0.);
+Point3f RIGHT_EYE(-20., -65.5,-5.);
+Point3f LEFT_EYE(-20., 65.5,-5.);
+Point3f RIGHT_EAR(-100., -77.5,-6.);
+Point3f LEFT_EAR(-100., 77.5,-6.);
+Point3f NOSE(21.0, 0., -48.0);
+Point3f STOMMION(10.0, 0., -75.0);
+Point3f MENTON(0., 0.,-133.0);
 \end{cppcode}
         \end{column}
     \end{columns}
@@ -543,8 +546,8 @@ cv::Point3f P3D_MENTON(0., 0.,-133.0);
 
     std::vector<Point3f> head_points;
 
-    head_points.push_back(P3D_SELLION);
-    head_points.push_back(P3D_RIGHT_EYE);
+    head_points.push_back(SELLION);
+    head_points.push_back(RIGHT_EYE);
     // ...
 
     std::vector<Point2f> detected_points;
@@ -582,7 +585,7 @@ cv::Point3f P3D_MENTON(0., 0.,-133.0);
 \end{cppcode}
 \end{onlyenv}
 
-    \source{http://github.com/severin-lemaignan/gazr}{gazr (include ROS support)}
+    \source{http://github.com/severin-lemaignan/gazr}{gazr}
 \end{frame}
 
 \imageframe[caption={In the wild, more difficult!}, color=black]{head_pose_real_world}
@@ -592,6 +595,31 @@ cv::Point3f P3D_MENTON(0., 0.,-133.0);
 
 \imageframe[color=black]{realSetup}
 \imageframe[color=black]{field_of_attention0}
+
+{
+    \paper{\source{http://academia.skadge.org/publis/lemaignan2016realtime.pdf}{S.
+    Lemaignan; F. Garcia; A. Jacq; P. Dillenbourg; From Real-time Attention
+    Assessment to “With-me-ness” in Human-Robot Interaction}}
+\begin{frame}{Field of view vs field of attention}
+
+
+    \begin{center}
+        \includegraphics[width=0.7\linewidth]{fov-foa}
+
+    \scriptsize
+    \begin{tabular}{p{3.3cm}cccccccc}
+        \toprule
+        {\bf Type} & {\bf horizontal} & {\bf vertical} \\
+        \midrule
+        FoV (Holmqvist 2011) & $\pm 40^\circ$ & $\pm 25^\circ$ \\
+        FoV (Walker 1980) & $\pm 95^\circ$ & $+60^\circ$, $-75^\circ$ \\
+        FoA (Sisbot 2011) & $\pm 30^\circ$ & $\pm30^\circ$ \\
+        FoA (Lemaignan 2016) & $\pm 40^\circ$ & $\pm40^\circ$ \\
+        \bottomrule
+    \end{tabular}
+
+    \end{center}
+\end{frame}
 
 \imageframe{field_of_attention_schema0}
 \imageframe{field_of_attention_schema1}
