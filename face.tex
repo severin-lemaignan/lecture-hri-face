@@ -93,7 +93,7 @@
     }
 
 
-\graphicspath{{figs/head_pose/}{figs/face_recognition/}{figs/attention/}}
+\graphicspath{{figs/face_detection/}{figs/head_pose/}{figs/face_recognition/}{figs/attention/}}
 
 \title{Facial features, Face recognition, Attention}
 \subtitle{AINT512}
@@ -116,14 +116,388 @@
 This week, we are looking at the face:
 
     \begin{itemize}
+        \item face detection
         \item face recognition
         \item head pose estimation
         \item attention tracking
     \end{itemize}
+
 \end{frame}
 
 \miniframeson
 
+\section{Face detection}
+
+
+\begin{frame}[plain]
+
+    Slides in this section are based on
+    \href{http://slazebni.cs.illinois.edu/spring16/}{Svetlana Lazebnik's
+    material}.
+    
+    She has many other really good lectures on computer vision.
+    
+    Go and check it!
+
+    \vspace{2em}
+    See also the
+    \href{https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html}{OpenCV
+    tutorials}: they provides a lot of explanations on how face detection works.
+\end{frame}
+
+\imageframe{viola-jones-detections}
+
+{
+    \paper{P. Viola and M. Jones.
+\href{http://www.vision.caltech.edu/html-files/EE148-2005-Spring/pprs/viola04ijcv.pdf}{\emph{Robust
+real-time face detection.}} IJCV 57(2), 2004.}
+
+\begin{frame}{Face detection with the Viola-Jones algorithm}
+
+    \begin{itemize}
+        \item de-facto standard for face detection
+        \item available in OpenCV
+        \item (relatively) slow training, but fast detection
+    \end{itemize}
+
+    \pause
+
+    Key ideas:
+
+    \begin{itemize}
+        \item \emph{Sliding window}
+        \item \emph{Rectangle filters} as image features
+        \item \emph{Integral images} for fast feature evaluation
+        \item \emph{Boosting} for feature selection
+        \item \emph{Attentional cascade} for fast rejection of non-face windows
+    \end{itemize}
+
+
+\end{frame}
+}
+
+\imageframe{sliding-window-0}
+\imageframe{sliding-window-1}
+
+\begin{frame}{Challenges of sliding window detection}
+
+Detector must evaluate tens of thousands of location/scale combinations
+
+Positive instances are rare: $0-10$ per image
+
+    \begin{itemize}
+
+        \item A megapixel image has $\approx 10^6$ pixels and a comparable
+            number of candidate object locations
+
+        \item For computational efficiency, we should try to spend as little time as
+            possible on the negative windows
+
+        \item  To avoid having a false positive in every image, our false positive
+            rate has to be less than $10^{-6}$.
+
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Image Features}
+
+    {\bf Rectangle filters}
+
+    \begin{columns}
+        \begin{column}{0.3\linewidth}
+            \begin{center}
+                \includegraphics[width=0.8\linewidth]{sample-face}
+            \end{center}
+
+        \end{column}
+        \begin{column}{0.7\linewidth}
+            \begin{center}
+                \includegraphics[width=0.8\linewidth]{rectangle-filters}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+    \emph{value $= \sum$(pixels in white area) $- \sum$(pixels in black area)}
+
+\note{
+
+For real problems results are only as good as the features used\ldots{}
+
+This is the main piece of ad-hoc (or domain) knowledge
+
+Rather than the pixels, we have selected a very large set of simple
+functions
+
+Sensitive to edges and other critcal features of the image
+
+** At multiple scales
+
+Since the final classifier is a perceptron it is important that the
+features be non-linear\ldots{} otherwise the final classifier will be a
+simple perceptron.
+
+We introduce a threshold to yield binary features
+}
+\end{frame}
+
+
+\begin{frame}{Fast computation with integral images}
+
+    \begin{columns}
+        \begin{column}{0.5\linewidth}
+            
+\begin{itemize}
+\item   The \emph{integral image} computes a value at each pixel
+  (\emph{x},\emph{y}) that is the sum of the pixel values above and to
+  the left of (\emph{x},\emph{y}), inclusive
+\item   This can quickly be computed in one pass through the image
+\end{itemize}
+
+        \end{column}
+        \begin{column}{0.5\linewidth}
+            \begin{center}
+                \includegraphics[width=0.8\linewidth]{integral-image-0}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}{Computing sum within a rectangle}
+
+    \begin{columns}
+        \begin{column}{0.5\linewidth}
+ \begin{itemize}
+\item   Let A,B,C,D be the values of the integral image at the corners of a
+  rectangle
+\item   What is the sum of pixel values within the rectangle?
+\item<2>
+  Only 3 additions are required for any size of rectangle!
+
+         $\text{sum} = A -B - C + D$
+\end{itemize}
+
+         \end{column}
+        \begin{column}{0.5\linewidth}
+            \begin{center}
+                \includegraphics[width=0.8\linewidth]{integral-image-1}
+            \end{center}
+        \end{column}
+    \end{columns}
+
+\end{frame}
+
+\begin{frame}{Computing a rectangle feature}
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{computing-rectangle-feature}
+    \end{center}
+
+    \emph{value $= \sum$(pixels in white area) $- \sum$(pixels in black area)}
+\end{frame}
+
+
+\begin{frame}{Feature selection}
+
+\only<1>{
+    \begin{columns}
+        \begin{column}{0.5\linewidth}
+    \begin{center}
+        \includegraphics[width=\linewidth]{haar_features}
+
+    \end{center}
+
+
+        \end{column}
+        \begin{column}{0.5\linewidth}
+    {\bf Haar features} (used \eg by the OpenCV implemetation). All sizes \& positions
+    are tested in the detection window.
+
+        \end{column}
+    \end{columns}
+}
+    \only<2>{
+        \begin{center}
+            \includegraphics[width=0.6\linewidth]{rectangle-features}
+        \end{center}
+    }
+\pause
+\begin{itemize}
+\item  For a 24x24px detection window, the number of possible rectangle
+  features is $\approx160,000$!
+\item At test time, it is impractical to evaluate the entire feature set
+\item Can we create a good classifier using just a small subset of all
+  possible features?
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Boosting}
+    \begin{center}
+        \includegraphics[width=0.7\linewidth]{weak-learners}
+    \end{center}
+
+    The key idea of {\bf boosting} is to (1) select simple, yet fast classifiers
+    (\emph{weak learners}) $\Rightarrow$ select the best rectangle features.
+
+    (2) combine them linearly.
+
+\end{frame}
+
+{
+    \paper{Freund, Y., Schapire, R., Abe, N. {\tt A short introduction to
+    boosting}, 1999}
+\begin{frame}{Boosting}
+
+    A \emph{learner} $h_t(x)$ looks like that:
+
+    \[
+        h_t(x\bubblemark{window}) = 
+    \begin{cases}
+        1,  & \text{if } f\bubblemark{feature}_t(x) > \theta\bubblemark{threshold}_t\\
+        0,  & \text{otherwise}
+    \end{cases}
+    \]
+
+    \only<1>{
+    Then, at round $t$:
+    \begin{itemize}
+        \item  find the weak learner with lowest training error
+        \item  increase the weights of training examples misclassified by current weak
+            learner
+        \item repeat.
+    \end{itemize}
+
+
+    \bubble<1>[300]{window}{window}
+    \bubble<1>{feature}{rectangle feature}
+    \bubble<1>[160]{threshold}{threshold}
+    }
+    \only<2>{
+    The final classifier is a weighted linear combination of all weak learners
+
+    \[
+        C(x) = 
+    \begin{cases}
+        1,  & \text{if } \sum^T_{t=1} \alpha_th_t(x) > \frac{1}{2} \sum_{t=1}
+        \alpha\bubblemark{learnedweights}_t\\
+        0,  & \text{otherwise}
+    \end{cases}
+    \]
+    \bubble<2>[120]{learnedweights}{learned weights}
+    }
+
+\end{frame}
+}
+
+\begin{frame}{Boosting for face detection}
+
+A 200-feature classifier can yield 95\% detection rate and a false
+positive rate of 1 in 14084
+
+    \begin{center}
+        \includegraphics[width=0.5\linewidth]{viola-jones-adaboost-roc}
+        Receiver operating characteristic (ROC) curve
+    \end{center}
+
+    OpenCV implementation uses $\approx 6000$ features.
+\end{frame}
+
+\begin{frame}{Futher improvement: attentional cascades}
+
+    \only<1>{
+    \begin{itemize}
+        \item Viola-Jones algorithm implements \textbf{attentional cascades}
+        \item simple classifiers which reject many of the negative
+      sub-windows while detecting almost all positive sub-windows
+    \item Positive response from the first classifier triggers the evaluation of
+          a second (more complex) classifier, and so on
+    \item A negative outcome at any point leads to the immediate rejection of
+          the sub-window
+    \end{itemize}
+
+    \begin{center}
+        \includegraphics[width=0.9\linewidth]{attentional-cascades}
+    \end{center}
+    }
+
+    \only<2>{
+        \begin{center}
+        \includegraphics[width=0.6\linewidth]{weak-learners}
+    \end{center}
+
+    \begin{itemize}
+        \item the 6000 features are distributed over 38 stages (cascades)
+        \item 1, 10, 25, 25 and 50 features in first five
+        \item the 2 features above are actually obtained as the best two
+                features from boosting
+        \item on an average, 10 features out of 6000 are evaluated per
+                sub-window
+        \end{itemize}
+    }
+\end{frame}
+
+
+\begin{frame}[fragile]{Python code}
+
+    \begin{columns}
+        \begin{column}{0.7\linewidth}
+            \begin{pythoncode}
+import cv2
+
+cascPath = "haarcascade_frontalface_default.xml"
+faceCascade = cv2.CascadeClassifier(cascPath)
+
+video_capture = cv2.VideoCapture(0)
+
+while True:
+    ret, frame = video_capture.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30)
+    )
+
+    for x, y, w, h in faces:
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+    cv2.imshow('Faces', frame)
+    cv2.waitKey(10)
+            \end{pythoncode}
+
+        \end{column}
+        \begin{column}{0.3\linewidth}
+            \begin{center}
+                \includegraphics[width=\linewidth]{python-sample}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{State-of-the-art face detection demo}
+
+    \begin{center}
+        \video[0.75]{0.5\paperwidth}{figs/face_detection/babenko.mp4}
+
+        \source{http://vision.ucsd.edu/~bbabenko/}{Boris Babenko}
+    \end{center}
+
+\end{frame}
+
+
+
+\begin{frame}[plain]
+    \begin{center}
+        ...from face detection to...
+    \end{center}
+\end{frame}
+\imageframe[color=black]{windows-hello}
 
 \section[Principal Component Analysis]{Face recognition: Principal Component Analysis}
 
@@ -494,6 +868,16 @@ between-class discriminant features}]{dataset}
 
 \end{frame}
 
+
+
+\begin{frame}{No spoofing please}
+
+
+\source{https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/windows-hello-face-authentication}{Microsoft
+    Windows doc}
+\end{frame}
+
+
 \miniframesoff
 \begin{frame}[plain]
     \begin{center}
@@ -504,9 +888,12 @@ between-class discriminant features}]{dataset}
 \miniframeson
 
 
-\section{6D head pose estimation}
+\section[Head pose]{6D head pose estimation}
 
-\begin{frame}[plain]{}
+{
+    \paper{Cao X., Wei Y., Wen F., Sun J., {\bf Face Alignment by Explicit Shape
+    Regression}, CVPR 2012}
+\begin{frame}{Facial landmarks}
     \begin{center}
      \only<1>{
         \includegraphics[width=0.8\linewidth]{head_pose0-me}
@@ -521,6 +908,9 @@ between-class discriminant features}]{dataset}
 
     \end{center}
 \end{frame}
+}
+
+\videoframe[0.56]{figs/head-tracking.mp4}
 
 \begin{frame}[fragile]{Face mask}
 
@@ -551,12 +941,7 @@ Point3f MENTON(0., 0.,-133.0);
 
 \begin{frame}[plain]{}
     \begin{center}
-     \only<1>{
-        \includegraphics[width=0.8\linewidth]{head_pose}
-    }
-     \only<2>{
         \includegraphics[width=0.8\linewidth]{head_pose2}
-    }
 
     {\tt dlib} or OpenPose/OpenFace + OpenCV
 
@@ -626,8 +1011,6 @@ Point3f MENTON(0., 0.,-133.0);
 \section{Attention tracking}
 
 
-\imageframe[color=black]{realSetup}
-\imageframe[color=black]{field_of_attention0}
 
 {
     \paper{\source{http://academia.skadge.org/publis/lemaignan2016realtime.pdf}{S.
@@ -653,6 +1036,9 @@ Point3f MENTON(0., 0.,-133.0);
 
     \end{center}
 \end{frame}
+
+\imageframe[color=black]{realSetup}
+\imageframe[color=black]{field_of_attention0}
 
 \imageframe{field_of_attention_schema0}
 \imageframe{field_of_attention_schema1}
@@ -688,8 +1074,8 @@ bool isInFieldOfView(const tf::TransformListener& listener,
 \end{frame}
 
 
-\imageframe{experimental_setup}
 \imageframe[color=black]{field_of_attention}
+\imageframe{experimental_setup}
 
 \begin{frame}{How good is the tracking?}
     \begin{center}
@@ -730,7 +1116,7 @@ bool isInFieldOfView(const tf::TransformListener& listener,
     \end{center}
 \end{frame}
 
-\section{With-me-ness}
+\section[With-me-ness]{Case study in attention tracking: With-me-ness}
 
 \begin{frame}[plain]{}
     \begin{center}
@@ -822,9 +1208,8 @@ def withmeness(startime, endtime):
 %\section{What does it say about the interaction?}
 %\imageframe[scale=0.95]{with-me-ness}
 
-\begin{frame}{In short}
+\begin{frame}{With-me-ness is...}
 
-    {\bf With-me-ness is...}
 
     \begin{itemize}
         \item An {\bf objective} \& {\bf quantitative} precursor of engagement...
@@ -840,6 +1225,10 @@ def withmeness(startime, endtime):
 
 
 \miniframesoff
+
+\begin{frame}{Next week}
+
+\end{frame}
 
 \begin{frame}{}
     \begin{center}

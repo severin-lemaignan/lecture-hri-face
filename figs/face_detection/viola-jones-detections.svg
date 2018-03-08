@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="640"
+   height="480"
+   viewBox="0 0 169.33334 127"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="viola-jones-detections.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="252.23021"
+     inkscape:cy="238.91744"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:snap-global="false"
+     inkscape:window-width="2560"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="873"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-170.00001)">
+    <image
+       sodipodi:absref="/home/slemaignan/teaching/aint512/lecture-face/figs/face-detection/10000000000001F5000001DE18AF7D4F35F7B27D.png"
+       xlink:href="10000000000001F5000001DE18AF7D4F35F7B27D.png"
+       style="stroke-width:1.94944632"
+       width="67.996864"
+       height="64.875259"
+       preserveAspectRatio="none"
+       id="image823"
+       x="88.775024"
+       y="227.89175" />
+    <image
+       sodipodi:absref="/home/slemaignan/teaching/aint512/lecture-face/figs/face-detection/1000000000000132000001D86CAEC70D6755DDF7.png"
+       xlink:href="1000000000000132000001D86CAEC70D6755DDF7.png"
+       style="stroke-width:2.28120017"
+       width="35.491188"
+       height="54.744576"
+       preserveAspectRatio="none"
+       id="image834"
+       x="112.12611"
+       y="171.03516" />
+    <image
+       sodipodi:absref="/home/slemaignan/teaching/aint512/lecture-face/figs/face-detection/10000000000002440000018C9C5349FFB6CC13A0.png"
+       xlink:href="10000000000002440000018C9C5349FFB6CC13A0.png"
+       style="stroke-width:1.94944632"
+       width="78.718933"
+       height="53.746029"
+       preserveAspectRatio="none"
+       id="image845"
+       x="15.394672"
+       y="171.33289" />
+    <image
+       sodipodi:absref="/home/slemaignan/teaching/aint512/lecture-face/figs/face-detection/100000000000017700000177F0CE5DC90D33799C.png"
+       xlink:href="100000000000017700000177F0CE5DC90D33799C.png"
+       style="stroke-width:1.54602647"
+       width="64.17662"
+       height="64.17662"
+       preserveAspectRatio="none"
+       id="image856"
+       x="13.534616"
+       y="227.92009" />
+  </g>
+</svg>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="604.28571"
+   height="453.21429"
+   viewBox="0 0 159.88393 119.91295"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="sliding-window-0.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="122.35489"
+     inkscape:cy="330.9593"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:snap-global="true"
+     inkscape:window-width="2560"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="873"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-1.3229159,-139.66742)">
+    <image
+       sodipodi:absref="/home/slemaignan/teaching/aint512/lecture-face/figs/face_detection/1000000000000320000002588E0267ED5EE59060.png"
+       xlink:href="1000000000000320000002588E0267ED5EE59060.png"
+       y="139.66742"
+       x="1.3229159"
+       id="image1437"
+       preserveAspectRatio="none"
+       height="119.91295"
+       width="159.88393"
+       style="stroke-width:1.3238771" />
+    <rect
+       style="opacity:1;vector-effect:non-scaling-stroke;fill:#ef2929;fill-opacity:0.21785715;stroke:#cc0000;stroke-width:1.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.98897059"
+       id="rect1440"
+       width="21.544643"
+       height="21.544643"
+       x="2.7214277"
+       y="140.72574"
+       rx="2.8348253"
+       ry="2.8348253" />
+    <g
+       id="g1448"
+       style="fill:#a40000;stroke:#a40000">
+      <path
+         sodipodi:nodetypes="cccccc"
+         inkscape:connector-curvature="0"
+         id="path1442"
+         d="M 27.970238,149.5893 H 147.97767 v 16.66875 H 14.174106 v 14.36309 h 48.002976"
+         style="fill:none;fill-rule:evenodd;stroke:#cc0000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path1444"
+         d="m 61.993098,183.88164 6.894584,-3.25263 -6.849826,-3.22865 z"
+         style="fill:#cc0000;fill-rule:evenodd;stroke:#cc0000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
