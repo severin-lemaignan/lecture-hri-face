@@ -95,7 +95,7 @@
 
 \graphicspath{{figs/face_detection/}{figs/head_pose/}{figs/face_recognition/}{figs/attention/}}
 
-\title{Facial features, Face recognition, Attention}
+\title{The face: detection, recognition, attention}
 \subtitle{AINT512}
 
 \date{}
@@ -205,6 +205,7 @@ Positive instances are rare: $0-10$ per image
 
     {\bf Rectangle filters}
 
+    \only<1>{
     \begin{columns}
         \begin{column}{0.3\linewidth}
             \begin{center}
@@ -218,7 +219,13 @@ Positive instances are rare: $0-10$ per image
             \end{center}
         \end{column}
     \end{columns}
+    }
+    \only<2> {
+    \begin{center}
+        \includegraphics[width=0.7\linewidth]{weak-learners}
+    \end{center}
 
+    }
     \emph{value $= \sum$(pixels in white area) $- \sum$(pixels in black area)}
 
 \note{
@@ -348,7 +355,7 @@ We introduce a threshold to yield binary features
 \end{frame}
 
 {
-    \paper{Freund, Y., Schapire, R., Abe, N. {\tt A short introduction to
+    \paper{Freund, Y., Schapire, R., Abe, N. {\bf A short introduction to
     boosting}, 1999}
 \begin{frame}{Boosting}
 
@@ -870,22 +877,22 @@ between-class discriminant features}]{dataset}
 
 
 
-\begin{frame}{No spoofing please}
+%\begin{frame}{No spoofing please}
+%
+%
+%\source{https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/windows-hello-face-authentication}{Microsoft
+%    Windows doc}
+%\end{frame}
 
 
-\source{https://docs.microsoft.com/en-us/windows-hardware/design/device-experiences/windows-hello-face-authentication}{Microsoft
-    Windows doc}
-\end{frame}
-
-
-\miniframesoff
-\begin{frame}[plain]
-    \begin{center}
-        \Large
-        10 min break\\[2em]
-    \end{center}
-\end{frame}
-\miniframeson
+%\miniframesoff
+%\begin{frame}[plain]
+%    \begin{center}
+%        \Large
+%        10 min break\\[2em]
+%    \end{center}
+%\end{frame}
+%\miniframeson
 
 
 \section[Head pose]{6D head pose estimation}
@@ -1231,10 +1238,6 @@ def withmeness(startime, endtime):
 
 
 \miniframesoff
-
-\begin{frame}{Next week}
-
-\end{frame}
 
 \begin{frame}{}
     \begin{center}
